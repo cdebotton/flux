@@ -77,8 +77,8 @@ describe 'Flux.Dispatcher', ->
       indexA = @AppDispatcher.register spyA
       indexB = @AppDispatcher.register spyB
       @AppDispatcher.waitFor [indexA, indexB], ->
-        spyA.should.have.been.calledOn()
-        spyB.should.have.been.calledOn()
+        spyA.should.have.been.called
+        spyB.should.have.been.called
         done()
       @AppDispatcher.dispatch {}
 

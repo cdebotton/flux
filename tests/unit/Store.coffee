@@ -25,16 +25,38 @@ describe 'Flux.Store', ->
       MyStore.noop.should.equal noop
 
   describe '#addChangeListener()', ->
-    it 'should require a callback method', ->
-      MyStore = Flux.Store.create {}
-      MyStore.addChangeListener.should.throw()
+    beforeEach ->
+      @store = Flux.Store.create {}
+      @store.__.flush()
 
-    it 'should register a callback for the store\'s event emitter', ->
-      spy = sinon.spy()
-      MyStore = Flux.Store.create {}
-      MyStore.addChangeListener spy
-      MyStore.__.getListeners()[0].should.equal spy
+    it 'should require a callback method', ->
+      @store.addChangeListener.should.throw()
+
+    it 'should proxy the EventEmitter\'s #on() method.', ->
+      spy = sinon.spy @store, 'on'
+      @store.addChangeListener noop
+      spy.should.have.been.calledOnce
 
   describe '#removeChangeListener()', ->
+    beforeEach ->
+      @store = Flux.Store.create {}
+      @store.__.flush()
+
+    it 'should require a callback method', ->
+      @store.removeChangeListener.should.throw()
+
+    it 'should proxy the EventEmitter\'s #on() method.', ->
+      spy = sinon.spy @store, 'removeListener'
+      @store.removeChangeListener noop
+      spy.should.have.been.calledOnce
+
   describe '#emitChange()', ->
-  describe '#dispatchIndex', ->
+    beforeEach ->
+      @store = Flux.Store.create {}
+      @store.__.flush()
+
+    it 'should call registered callbacks', ->
+      spy = sinon.spy()
+      @store.addChangeListener spy
+      @store.emitChange()
+      spy.should.have.been.calledOnce
